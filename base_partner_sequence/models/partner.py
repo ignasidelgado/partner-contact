@@ -13,7 +13,14 @@ class ResPartner(models.Model):
     _inherit = "res.partner"
 
     def _get_next_ref(self, vals=None):
-        return self.env["ir.sequence"].next_by_code("res.partner")
+        partner_search_mode = self.env.context.get('res_partner_search_mode')
+        if partner_search_mode == 'customer':
+            seq = "res.partner.customer"
+        elif partner_search_mode == 'supplier':
+            seq = "res.partner.supplier"
+        else:
+            seq = "res.partner"
+        return self.env["ir.sequence"].next_by_code(seq)
 
     @api.model
     def create(self, vals):
